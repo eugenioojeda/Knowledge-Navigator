@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Navigator</title>
+  <link rel="stylesheet" href="../styles/documentsstyles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+
+
+<body>
+  <header class="navbar">
+    <div class="logo"><img src="../styles/images/logo2.webp" alt="Documento" class="logo-image"><span
+        class="Knowledge"></span></div>
+    <nav>
+
+      <a class="home-btn" href="landing.html">Home</a>
+      <a class="chat-btn" href="chat.html">Chat</a>
+      <a class="docs-btn" href="documents.html">Documents</a>
+
+      <!-- Botones en tu navbar o donde quieras -->
+      <a href="#" id="openLogin">Sign In</a>
+
+
+      <p id="saludoUsuario" style="display:none;"></p>
+      <a href="#" id="logoutBtn" style="display:none" onclick="cerrarSesion()">Logout</a>
+
+
+      <a href="#" id="openRegister" class="btn-primary">Get started</a>
+
+      <!-- Modal Login -->
+      <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" id="closeLogin">&times;</span>
+          <h2>Iniciar Sesión</h2>
+          <form id="loginForm">
+            <input type="text" id="username" placeholder="Usuario" required><br>
+            <input type="password" id="password" placeholder="Contraseña" required><br>
+            <button type="submit">Entrar</button>
+            <p id="loginError" style="color: red; display: none;">Credenciales incorrectas</p>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Registro -->
+      <div id="registroModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" id="closeRegister">&times;</span>
+          <h2>Crear Cuenta</h2>
+          <form id="registroForm">
+            <input type="text" id="newUsername" placeholder="Nuevo usuario" required><br>
+            <input type="password" id="newPassword" placeholder="Contraseña" required><br>
+            <button type="submit">Registrarse</button>
+            <p id="registroError" style="color: red; display: none;">Nombre de usuario ya en uso</p>
+          </form>
+        </div>
+      </div>
+
+
+    </nav>
+  </header>
+  <div id="protectedContent" style="display: none;">
+    <main class="library-container">
+      <div class="library-header">
+        <div>
+          <h1>Document Library</h1>
+          <p>Manage and organize your enterprise documents</p>
+        </div>
+        <div class="controls">
+
+          <input type="file" id="pdfFiles" multiple accept="application/pdf" />
+          <label for="pdfFiles" class="upload-label">Seleccionar PDF(s)</label>
+          <div id="fileList" class="file-name"> "Aquí verás tus archivos a subir" </div>
+          <button onclick="uploadPDFs()" class="upload-btn">Upload Documents</button>
+
+        </div>
+      </div>
+
+
+
+      <p id="no-docs-message" style="text-align: center; color: #666;">
+        No tienes ningún PDF subido aún.
+      </p>
+
+      <div class="document-grid">
+        <!-- Document card example -->
+      </div>
+    </main>
+  </div>
+  <div id="loginRequired" style="display: none; text-align: center; margin-top: 80px;">
+    <h2 style="color: #d9534f; font-family: 'Inter', sans-serif;">
+      Necesitas iniciar sesión para usar esta función.
+    </h2>
+    <a href="landing.html" style="color: #007bff; text-decoration: underline;">Volver al inicio</a>
+  </div>
+
+</body>
+
+
+
+
+<script>
+  // Al inicio del script
+  window.documentosSubidos = [];
+
+
+  async function uploadPDFs() {
+    const files = document.getElementById("pdfFiles").files;
+    const documentGrid = document.querySelector(".document-grid");
+
+    const formData = new FormData();
+    const fileCards = [];
+
+    // Crear una card por archivo, agregar al FormData y guardar en localStorage
+    for (let file of files) {
+      formData.append("files", file);
+
+      const card = createDocCard(file.name, "processing");
+      uploadFileWithProgress(file, card); // Subir archivo con barra de progreso
+      toggleNoDocsMessage(); // Ocultar mensaje si hay archivos
+
+      fileCards.push({ file, card });
+
+      // Guardar en localStorage como en proceso
+      const tempDocs = JSON.parse(localStorage.getItem("docsEnProceso") || "[]");
+      tempDocs.push({ name: file.name, status: "processing" });
+      localStorage.setItem("docsEnProceso", JSON.stringify(tempDocs));
+    }
+
+    // Simular barra de progreso
+    fileCards.forEach(({ card }) => simulateProgress(card));
+
+    try {
+      const res = await fetch("http://localhost:5000/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const contentType = res.headers.get("content-type");
+
+      if (!res.ok) {
+        fileCards.forEach(({ card }) => updateCardStatus(card, "error"));
+        const text = await res.text();
+        throw new Error(`Error del servidor (${res.status}): ${text}`);
+      }
+
+      const data = contentType.includes("application/json")
+        ? await res.json()
+        : { message: "Respuesta no válida" };
+
+      fileCards.forEach(({ card, file }) => {
+        completeProgressBar(card);
+        updateCardStatus(card, "success");
+
+        // Eliminar del localStorage
+        let tempDocs = JSON.parse(localStorage.getItem("docsEnProceso") || "[]");
+
+        // Filtrar todos los archivos que ya se subieron
+        const nuevosDocsEnProceso = tempDocs.filter(doc => doc.name !== file.name);
+
+        // Actualizar localStorage sin los que ya están subidos
+        localStorage.setItem("docsEnProceso", JSON.stringify(nuevosDocsEnProceso));
+
+
+        // Agregar al listado subido en memoria (si usas esto en la sesión)
+        window.documentosSubidos.push({ name: file.name, status: "success" });
+      });
+
+    } catch (err) {
+      console.error("❌ Error al subir archivos:", err);
+      fileCards.forEach(({ card }) => {
+        completeProgressBar(card);
+        updateCardStatus(card, "error");
+      });
+    }
+  }
+
+
+  function completeProgressBar(card) {
+    const bar = card.querySelector(".progress-bar");
+    if (bar) {
+      bar.style.transition = "width 0.3s ease"; // para suavizar el salto
+      bar.style.width = "100%";
+    }
+
+    // Limpia el intervalo si existe
+    if (card._progressInterval) {
+      clearInterval(card._progressInterval);
+      delete card._progressInterval;
+    }
+  }
+
+
+  function simulateProgress(card) {
+    const progressBar = card.querySelector(".progress-bar");
+    let width = 0;
+
+    if (!progressBar) return;
+
+    const interval = setInterval(() => {
+      width += 5;
+
+      if (width >= 90) {
+        clearInterval(interval);
+        progressBar.style.width = "90%";
+        return;
+      }
+
+      progressBar.style.width = `${width}%`;
+    }, 300);
+
+    // Guardar referencia para que luego puedas limpiarla si deseas
+    card._progressInterval = interval;
+  }
+
+
+  function createDocCard(filename, status = "processing") {
+    const badgeClassMap = {
+      processing: "processing",
+      success: "ready",
+      error: "error"
+    };
+
+    const badgeTextMap = {
+      processing: "En proceso...",
+      success: "Subido",
+      error: "Error"
+    };
+
+
+    function formatDateTime(date) {
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      return date.toLocaleDateString('es-ES', options);
+    }
+
+    const now = new Date();
+    const formattedDate = formatDateTime(now);
+
+    const card = document.createElement("div");
+    card.className = "doc-card";
+
+    card.innerHTML = `
+      <div class="doc-header">
+        <div class="doc-icon"><img src="../styles/images/pdf.png" alt="Documento" class="doc-image"></div>
+        <div class="doc-info">
+          <h3>${filename}</h3>
+          <span class="badge ${badgeClassMap[status]}">${badgeTextMap[status]}</span>
+        </div>
+      </div>
+      <p class="doc-meta">Subido el ${formattedDate}</p>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar" style="width: 0%;"></div>
+      </div>
+      <div class="actions">
+        
+        <button title="Delete"><i class="fas fa-trash-alt"></i></button>
+      </div>`;
+
+
+    const deleteBtn = card.querySelector('button[title="Delete"]');
+    deleteBtn.addEventListener("click", async () => {
+      const confirmDelete = confirm(`¿Estás seguro de eliminar "${filename}"?`);
+      if (!confirmDelete) return;
+
+      try {
+        const res = await fetch(`http://localhost:5000/delete?collection_name=Knowledge-Navigator&pdf_nombre=${encodeURIComponent(filename)}`, {
+          method: "DELETE"
+        });
+
+        if (!res.ok) throw new Error("Error al eliminar el documento en el servidor");
+
+        const result = await res.json();
+        console.log("🔁 Respuesta del backend:", result);
+        if (result.success === true) {
+          card.remove();
+          toggleNoDocsMessage();
+        } else {
+          alert("⚠️ No se pudo eliminar el documento del sistema.");
+        }
+      } catch (err) {
+        console.error("❌ Error al eliminar:", err);
+        alert("❌ Error al eliminar el documento.");
+      }
+    });
+
+
+    document.querySelector(".document-grid").appendChild(card);
+    return card;
+  }
+
+  function toggleNoDocsMessage() {
+    const grid = document.querySelector(".document-grid");
+    const message = document.getElementById("no-docs-message");
+
+    if (grid.children.length === 0) {
+      message.style.display = "block";
+    } else {
+      message.style.display = "none";
+    }
+  }
+
+  // Guarda o actualiza el estado de un archivo en localStorage
+  function markUploadComplete(filename, status) {
+    let docsEnProceso = JSON.parse(localStorage.getItem("docsEnProceso") || "[]");
+
+    const index = docsEnProceso.findIndex(doc => doc.name === filename);
+    if (index !== -1) {
+      docsEnProceso[index].status = status;
+    } else {
+      docsEnProceso.push({ name: filename, status });
+    }
+
+    localStorage.setItem("docsEnProceso", JSON.stringify(docsEnProceso));
+  }
+
+  // Al cargar la página, cargar las tarjetas desde localStorage y actualizar estado
+  document.addEventListener("DOMContentLoaded", () => {
+    const docsEnProceso = JSON.parse(localStorage.getItem("docsEnProceso") || "[]");
+
+    if (docsEnProceso.length === 0) {
+      toggleNoDocsMessage();
+      return;
+    }
+
+    docsEnProceso.forEach(doc => {
+      const card = createDocCard(doc.name, doc.status);
+      updateCardStatus(card, doc.status);
+    });
+
+    toggleNoDocsMessage();
+  });
+
+
+  function updateCardStatus(card, status) {
+    const badge = card.querySelector(".badge");
+    const progressBar = card.querySelector(".progress-bar");
+
+    const badgeClassMap = {
+      processing: "processing",
+      success: "ready",
+      error: "error"
+    };
+
+    const badgeTextMap = {
+      processing: "En proceso...",
+      success: "Subido",
+      error: "Error"
+    };
+
+    if (!badge || !progressBar) return;
+
+    badge.textContent = badgeTextMap[status];
+    badge.className = `badge ${badgeClassMap[status]}`;
+
+    if (status === "success") {
+      progressBar.style.width = "100%";
+    } else if (status === "processing") {
+      progressBar.style.width = "0%";
+    } else if (status === "error") {
+      progressBar.style.width = "0%";
+    }
+
+    // Actualizar estado en localStorage
+    const filename = card.querySelector(".doc-info h3").textContent;
+    markUploadComplete(filename, status);
+  }
+
+
+
+
+  let documentos = []
+
+  localStorage.setItem("documentosSubidos", documentos.length > 0 ? "true" : "false");
+
+
+  function renderUploadedDocuments() {
+    const documentGrid = document.querySelector(".document-grid");
+    documentGrid.innerHTML = ""; // Limpia el grid
+
+    window.documentosSubidos.forEach(doc => {
+      const card = createDocCard(doc.name, doc.status);
+      documentGrid.appendChild(card);
+    });
+
+    toggleNoDocsMessage();
+  }
+
+
+  async function cargarDocumentosDesdeBackend() {
+    try {
+      const enProceso = JSON.parse(localStorage.getItem("docsEnProceso") || "[]");
+
+      // Carga los documentos en proceso
+      if (enProceso.length > 0) {
+        enProceso.forEach(doc => {
+          createDocCard(doc.name, doc.status);
+        });
+      }
+
+      // ➕ Elimina los que ya están marcados como "success" en el backend
+      const res = await fetch("http://localhost:5000/documentos_unicos/Knowledge-Navigator");
+      if (!res.ok) throw new Error("No se pudo obtener la lista de documentos");
+
+      const documentos = await res.json();
+      console.log("📄 Documentos cargados:", documentos);
+
+      window.documentosSubidos = documentos.map(name => ({ name, status: "success" }));
+      renderUploadedDocuments();
+
+      // 🔁 Filtra el localStorage eliminando los que ya existen en el backend
+      const pendientes = enProceso.filter(doc => !documentos.includes(doc.name));
+      localStorage.setItem("docsEnProceso", JSON.stringify(pendientes));
+
+
+      toggleNoDocsMessage();
+    } catch (err) {
+      // console.error("❌ Error al cargar documentos:", err);
+      // alert("❌ No se pudieron cargar los documentos desde el sistema.");
+    }
+  }
+
+
+  const input = document.getElementById('pdfFiles');
+  const fileList = document.getElementById('fileList');
+
+  input.addEventListener('change', () => {
+    const files = Array.from(input.files);
+    if (files.length > 0) {
+      fileList.innerHTML = files.map(file => `• ${file.name}`).join('<br>');
+    } else {
+      fileList.innerHTML = '';
+    }
+  });
+
+  function uploadFileWithProgress(file, card) {
+    const url = "http://localhost:5000/upload";
+
+    const formData = new FormData();
+    formData.append("files", file);
+
+    const xhr = new XMLHttpRequest();
+
+    const progressBar = card.querySelector(".progress-bar");
+
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.floor((event.loaded / event.total) * 90); // Llegar hasta 90%
+        progressBar.style.width = percent + "%";
+      }
+    });
+
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        completeProgressBar(card); // animar de 90% a 100%
+        updateCardStatus(card, "success");
+      } else {
+        updateCardStatus(card, "error");
+        console.error("Error al subir:", xhr.responseText);
+      }
+    };
+
+    xhr.onerror = function () {
+      updateCardStatus(card, "error");
+      console.error("❌ Error de red");
+    };
+
+    xhr.open("POST", url);
+    xhr.send(formData);
+
+    // Comienza con 0%
+    progressBar.style.width = "0%";
+  }
+
+
+  // Cargar documentos automáticamente al iniciar la página
+  window.addEventListener("DOMContentLoaded", () => {
+    cargarDocumentosDesdeBackend();
+  });
+
+  // --- LOGIN ---
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorElem = document.getElementById('loginError');
+    errorElem.style.display = 'none';
+
+    try {
+      const res = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!res.ok) {
+        errorElem.textContent = 'Credenciales incorrectas';
+        errorElem.style.display = 'block';
+        return;
+      }
+
+      const data = await res.json();
+      alert(data.message);
+
+
+      // Cerrar modal y limpiar inputs
+      document.getElementById('loginModal').style.display = 'none';
+      e.target.reset();
+      // Después del login exitoso
+      if (data.success) {
+        localStorage.setItem("usuario", username);
+        actualizarInterfazSegunLogin(); // 🔥 actualiza la UI inmediatamente
+        ajustarNavbarSegunLogin()
+
+        // Cerrar modal, limpiar campos
+        document.getElementById('loginModal').style.display = 'none';
+        e.target.reset();
+      }
+
+
+    } catch (err) {
+      errorElem.textContent = 'Error de conexión';
+      errorElem.style.display = 'block';
+    }
+  });
+
+
+  function actualizarInterfazSegunLogin() {
+    const usuario = localStorage.getItem("usuario");
+
+    const logueado = !!usuario;
+    document.getElementById("openLogin").style.display = logueado ? "none" : "inline";
+    document.getElementById("openRegister").style.display = logueado ? "none" : "inline";
+    document.getElementById("logoutBtn").style.display = logueado ? "inline" : "none";
+
+    const saludo = document.getElementById("saludoUsuario");
+    if (saludo) {
+      if (logueado) {
+        saludo.innerText = `Bienvenido, ${usuario}`;
+        saludo.style.display = "inline";
+      } else {
+        saludo.style.display = "none";
+      }
+    }
+  }
+
+  window.onload = function () {
+    const logueado = estaLogueado();
+    const content = document.getElementById("protectedContent");
+    const loginMessage = document.getElementById("loginRequired");
+
+    if (logueado) {
+      content.style.display = "block";
+      loginMessage.style.display = "none";
+    } else {
+      content.style.display = "none";
+      loginMessage.style.display = "block";
+    }
+
+    actualizarInterfazSegunLogin(); // aplica el estado inicial según login
+    ajustarNavbarSegunLogin()
+  };
+
+
+  function cerrarSesion() {
+    localStorage.removeItem("usuario");
+    actualizarInterfazSegunLogin();
+    location.reload(); // recarga la página para aplicar cambios
+  }
+
+  // --- REGISTRO ---
+  document.getElementById('registroForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('newUsername').value.trim();
+    const password = document.getElementById('newPassword').value.trim();
+    const errorElem = document.getElementById('registroError');
+    errorElem.style.display = 'none';
+
+    try {
+      const res = await fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!res.ok) {
+        errorElem.textContent = 'Nombre de usuario ya en uso';
+        errorElem.style.display = 'block';
+        return;
+      }
+
+      alert('Registro exitoso! Ahora puedes iniciar sesión.');
+
+      // Cerrar modal y limpiar inputs
+      document.getElementById('registroModal').style.display = 'none';
+      e.target.reset();
+
+    } catch (err) {
+      errorElem.textContent = 'Error de conexión';
+      errorElem.style.display = 'block';
+    }
+  });
+
+
+  // Abrir modales
+  document.getElementById('openLogin').onclick = function (e) {
+    e.preventDefault();
+    document.getElementById('loginModal').style.display = 'block';
+  }
+  document.getElementById('openRegister').onclick = function (e) {
+    e.preventDefault();
+    document.getElementById('registroModal').style.display = 'block';
+  }
+
+  // Cerrar modales con la X
+  document.getElementById('closeLogin').onclick = function () {
+    document.getElementById('loginModal').style.display = 'none';
+  }
+  document.getElementById('closeRegister').onclick = function () {
+    document.getElementById('registroModal').style.display = 'none';
+  }
+
+  // Cerrar modal clickeando fuera del contenido
+  window.onclick = function (event) {
+    const loginModal = document.getElementById('loginModal');
+    const registroModal = document.getElementById('registroModal');
+    if (event.target == loginModal) {
+      loginModal.style.display = 'none';
+    }
+    if (event.target == registroModal) {
+      registroModal.style.display = 'none';
+    }
+  }
+
+
+  function estaLogueado() {
+    return localStorage.getItem("usuario") !== null;
+  }
+  function ajustarNavbarSegunLogin() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    const estiloActual = window.getComputedStyle(navbar);
+    const paddingActual = parseInt(estiloActual.paddingRight); // en píxeles
+
+    if (estaLogueado()) {
+      navbar.style.paddingRight = (paddingActual - 30) + 'px';
+    } else {
+      navbar.style.paddingRight = paddingActual + 'px'; // lo deja como estaba
+    }
+  }
+
+</script>
+</body>
+
+</html>

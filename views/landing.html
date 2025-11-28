@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Navigator</title>
+  <link rel="stylesheet" href="../styles/landingstyles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+
+<body>
+  <header class="navbar">
+    <div class="logo"><img src="../styles/images/logo2.webp" alt="Documento" class="logo-image"></div>
+    <nav>
+
+      <a class="home-btn" href="landing.html">Home</a>
+      <a class="chat-btn" href="chat.html">Chat</a>
+      <a class="docs-btn" href="documents.html">Documents</a>
+
+      <!-- Botones en tu navbar o donde quieras -->
+      <a href="#" id="openLogin">Sign In</a>
+
+
+      <p id="saludoUsuario" style="display:none;"></p>
+      <a href="#" id="logoutBtn" style="display:none" onclick="cerrarSesion()">Logout</a>
+
+
+      <a href="#" id="openRegister" class="btn-primary">Get started</a>
+
+
+      <!-- Modal Login -->
+      <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" id="closeLogin">&times;</span>
+          <h2>Iniciar Sesión</h2>
+          <form id="loginForm">
+            <input type="text" id="username" placeholder="Usuario" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Entrar</button>
+            <p id="loginError" class="error-msg">Credenciales incorrectas</p>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- Modal Registro -->
+      <div id="registroModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" id="closeRegister">&times;</span>
+          <h2>Crear Cuenta</h2>
+          <form id="registroForm">
+            <input type="text" id="newUsername" placeholder="Nuevo usuario" required><br>
+            <input type="password" id="newPassword" placeholder="Contraseña" required><br>
+            <button type="submit">Registrarse</button>
+            <p id="registroError" style="color: red; display: none;">Nombre de usuario ya en uso</p>
+          </form>
+        </div>
+      </div>
+
+
+    </nav>
+  </header>
+
+  <main class="hero">
+    <h1>Transform Your Enterprise<br><span class="highlight">Documents into Intelligence</span></h1>
+    <p class="paragraph">
+      Upload your company PDFs and get instant, intelligent answers through our AI-powered chatbot. Streamline knowledge
+      sharing and boost productivity across your organization.
+    </p>
+
+
+    <a href="chat.html" id="startChattingBtn" class="startchatting-btn">
+      <span id="lockIcon" class="lock-icon" style="display: none;"></span> Start Chatting
+    </a>
+    <div id="login-tooltip" class="tooltip">Necesitas iniciar sesión para utilizar esta función.</div>
+
+
+    <div class="stats">
+      <div class="card">
+        <div><img src="../styles/images/clients.png" alt="Documento" class="clients-image"></div>50+
+        <p>Enterprise Clients Expected</p>
+      </div>
+      <div class="card">
+        <div><img src="../styles/images/shield.png" alt="Documento" class="shield-image"></div>99.9%
+        <p>Security Uptime</p>
+      </div>
+      <div class="card">
+        <div><img src="../styles/images/rayo.png" alt="Documento" class="clients-image"></div>3-6s
+        <p>Average Response</p>
+      </div>
+    </div>
+  </main>
+
+  <section class="features-section">
+    <h2 class="section-title">Powerful Features for<span class="highlight"> Modern Enterprises</span> </h2>
+    <p class="section-subtitle">Everything you need to transform your document management and knowledge sharing
+      processes.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon-box upload-icon"><img src="../styles/images/subida.webp" alt="Documento" class="chat-image">
+        </div>
+        <h3>Easy Document Upload</h3>
+        <p>Drag and drop PDFs directly into the system. Support for multiple file formats and batch uploads.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-box chat-icon"><img src="../styles/images/chat.webp" alt="Documento" class="chat-image"></div>
+        <h3>Intelligent Chat</h3>
+        <p>Ask questions in natural language and get precise answers from your documents instantly.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-box shield-icon"><img src="../styles/images/shield.png" alt="Documento" class="chat-image">
+        </div>
+        <h3>Enterprise Security</h3>
+        <p>Bank-level encryption, compliance with SOC 2, GDPR, and complete data privacy protection.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-box search-icon"><img src="../styles/images/lupa.webp" alt="Documento" class="chat-image">
+        </div>
+        <h3>Advanced Search</h3>
+        <p>Powerful search across all documents with context-aware results and semantic understanding.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-box team-icon"><img src="../styles/images/clients.png" alt="Documento" class="chat-image">
+        </div>
+        <h3>Team Collaboration</h3>
+        <p>Share documents and insights across teams with role-based access control and permissions.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon-box lightning-icon"><img src="../styles/images/rayo.png" alt="Documento" class="chat-image">
+        </div>
+        <h3>Real-time Processing</h3>
+        <p>Lightning-fast document processing and instant responses powered by advanced AI models.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="cta">
+    <h2>Ready to Transform Your Document Workflow?</h2>
+    <p>Join thousands of enterprises already using DocuChat to streamline their knowledge management.</p>
+    <button>Start Your Free Trial</button>
+  </section>
+
+</body>
+<footer>
+  <div class="footer-content">
+
+
+    <div class="footer-column">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">API</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Case Studies</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Contact</h4>
+      <ul>
+        <li> Knowledgenavigator@gmail.com</li>
+        <li>📞 +34 636 12 54 67</li>
+        <li>📍 Las Palmas de Gran Canaria</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 Knowledge Navigator Enterprise. All rights reserved.</p>
+    <div class="legal-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+<script>
+  function estaLogueado() {
+    return localStorage.getItem("usuario") !== null;
+  }
+  function ajustarNavbarSegunLogin() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    const estiloActual = window.getComputedStyle(navbar);
+    const paddingActual = parseInt(estiloActual.paddingRight); // en píxeles
+
+    if (estaLogueado()) {
+      navbar.style.paddingRight = (paddingActual - 30) + 'px';
+    } else {
+      navbar.style.paddingRight = paddingActual + 'px'; // lo deja como estaba
+    }
+  }
+
+
+  // --- LOGIN ---
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorElem = document.getElementById('loginError');
+    errorElem.style.display = 'none';
+
+    try {
+      const res = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!res.ok) {
+        errorElem.textContent = 'Credenciales incorrectas';
+        errorElem.style.display = 'block';
+        return;
+      }
+
+      const data = await res.json();
+      alert(data.message);
+
+
+      // Cerrar modal y limpiar inputs
+      document.getElementById('loginModal').style.display = 'none';
+      e.target.reset();
+      // Después del login exitoso
+      if (data.success) {
+        localStorage.setItem("usuario", username);
+        actualizarInterfazSegunLogin(); // 🔥 actualiza la UI inmediatamente
+        ajustarNavbarSegunLogin();
+        // Cerrar modal, limpiar campos
+        const startBtn = document.getElementById("startChattingBtn");
+        const lockIcon = document.getElementById("lockIcon");
+        const tooltip = document.getElementById("login-tooltip");
+        if (startBtn) {
+          startBtn.onclick = null;
+          startBtn.href = "chat.html";
+          if (lockIcon) lockIcon.style.display = "none";
+          if (tooltip) tooltip.style.display = "none";
+        }
+        document.getElementById('loginModal').style.display = 'none';
+        e.target.reset();
+      }
+
+
+    } catch (err) {
+      errorElem.textContent = 'Error de conexión';
+      errorElem.style.display = 'block';
+    }
+  });
+
+
+  function actualizarInterfazSegunLogin() {
+    const usuario = localStorage.getItem("usuario");
+    const logueado = !!usuario;
+
+    document.getElementById("openLogin").style.display = logueado ? "none" : "inline";
+    document.getElementById("openRegister").style.display = logueado ? "none" : "inline";
+    document.getElementById("logoutBtn").style.display = logueado ? "inline" : "none";
+
+    const saludo = document.getElementById("saludoUsuario");
+    if (saludo) {
+      if (logueado) {
+        saludo.innerText = `Bienvenido, ${usuario}`;
+        saludo.style.display = "inline";
+      } else {
+        saludo.style.display = "none";
+      }
+    }
+
+    // Control del botón Start Chatting
+    const lockIcon = document.getElementById("lockIcon");
+    const tooltip = document.getElementById("login-tooltip");
+    const startChattingBtn = document.getElementById("startChattingBtn");
+
+    if (!logueado) {
+      lockIcon.style.display = "inline";
+
+      startChattingBtn.href = "#"; // bloquea el link
+
+      startChattingBtn.onclick = function (e) {
+        e.preventDefault();
+        tooltip.style.display = "block";
+
+        // Opcional: ocultar tooltip después de 3 segundos
+        setTimeout(() => {
+          tooltip.style.display = "none";
+        }, 3000);
+      };
+    } else {
+      lockIcon.style.display = "none";
+      tooltip.style.display = "none";
+
+      startChattingBtn.href = "chat.html"; // activa el link
+      startChattingBtn.onclick = null; // quita bloqueo
+    }
+  }
+
+
+  window.onload = function () {
+    actualizarInterfazSegunLogin(); // aplica el estado inicial según login
+    ajustarNavbarSegunLogin();
+  };
+
+
+  function cerrarSesion() {
+    localStorage.removeItem("usuario");
+    actualizarInterfazSegunLogin();
+    location.reload(); // recarga la página para aplicar cambios
+  }
+
+  // --- REGISTRO ---
+  document.getElementById('registroForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('newUsername').value.trim();
+    const password = document.getElementById('newPassword').value.trim();
+    const errorElem = document.getElementById('registroError');
+    errorElem.style.display = 'none';
+
+    try {
+      const res = await fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!res.ok) {
+        errorElem.textContent = 'Nombre de usuario ya en uso';
+        errorElem.style.display = 'block';
+        return;
+      }
+
+      alert('Registro exitoso! Ahora puedes iniciar sesión.');
+
+      // Cerrar modal y limpiar inputs
+      document.getElementById('registroModal').style.display = 'none';
+      e.target.reset();
+
+    } catch (err) {
+      errorElem.textContent = 'Error de conexión';
+      errorElem.style.display = 'block';
+    }
+  });
+
+
+  // Abrir modales
+  document.getElementById('openLogin').onclick = function (e) {
+    e.preventDefault();
+    document.getElementById('loginModal').style.display = 'flex';
+  }
+  document.getElementById('openRegister').onclick = function (e) {
+    e.preventDefault();
+    document.getElementById('registroModal').style.display = 'flex';
+  }
+
+  // Cerrar modales con la X
+  document.getElementById('closeLogin').onclick = function () {
+    document.getElementById('loginModal').style.display = 'none';
+  }
+  document.getElementById('closeRegister').onclick = function () {
+    document.getElementById('registroModal').style.display = 'none';
+  }
+
+  // Cerrar modal clickeando fuera del contenido
+  window.onclick = function (event) {
+    const loginModal = document.getElementById('loginModal');
+    const registroModal = document.getElementById('registroModal');
+    if (event.target == loginModal) {
+      loginModal.style.display = 'none';
+    }
+    if (event.target == registroModal) {
+      registroModal.style.display = 'none';
+    }
+  }
+
+</script>
+
+</html>
