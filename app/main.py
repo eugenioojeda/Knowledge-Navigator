@@ -548,7 +548,7 @@ async def enviar_progreso(filename: str, porcentaje: int):
             print(f"Error al enviar progreso por WebSocket: {e}")
 
 
-
+"""
 from app.auth_utils import authenticate_user, register_user
 from passlib.context import CryptContext
 from app.database import fake_users_db
@@ -596,3 +596,4 @@ def user_exists(username: str):
 
 def add_user(username: str, password: str):
     fake_users_db[username] = password    
+"""

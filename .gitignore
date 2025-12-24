@@ -1,0 +1,21 @@
+# Entornos virtuales
+venv/
+knowledgeNavigator/
+env/
+.venv/
+
+# Variables de entorno
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Sistema
+.DS_Store

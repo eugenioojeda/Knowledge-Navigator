@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="../styles/chatstyles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- <style>
+<!--
+   <style>
     /* Hacemos que el body sea un contenedor flex para el panel lateral */
     body {
       display: flex;
@@ -108,54 +108,79 @@
         position: relative;
         padding-right: 45px; /* Más espacio para el icono */
     }
-  </style> -->
+  </style>--> 
 </head>
 
 <body class="chat-interface">
   <div class="main-content-wrapper">
     <header class="navbar">
-        <div class="logo"><img src="../styles/images/logo2.webp" alt="Documento" class="logo-image"><span class="Knowledge"></span></div>
-        <nav>
-          <a class="home-btn" href="landing.html">Home</a>
-          <a class="chat-btn" href="chat.html">Chat</a>
-          <a class="docs-btn" href="documents.html">Documents</a>
-          <a href="#" id="openLogin">Sign In</a>
-          <p id="saludoUsuario" style="display:none;"></p>
-          <a href="#" id="logoutBtn" style="display:none" onclick="cerrarSesion()">Logout</a>
-          <a href="#" id="openRegister" class="btn-primary">Get started</a>
-          <div id="loginModal" class="modal" style="display: none;"><div class="modal-content"><span class="close" id="closeLogin">&times;</span><h2>Iniciar Sesión</h2><form id="loginForm"><input type="text" id="username" placeholder="Usuario" required><br><input type="password" id="password" placeholder="Contraseña" required><br><button type="submit">Entrar</button><p id="loginError" style="color: red; display: none;">Credenciales incorrectas</p></form></div></div>
-          <div id="registroModal" class="modal" style="display: none;"><div class="modal-content"><span class="close" id="closeRegister">&times;</span><h2>Crear Cuenta</h2><form id="registroForm"><input type="text" id="newUsername" placeholder="Nuevo usuario" required><br><input type="password" id="newPassword" placeholder="Contraseña" required><br><button type="submit">Registrarse</button><p id="registroError" style="color: red; display: none;">Nombre de usuario ya en uso</p></form></div></div>
-        </nav>
-    </header> <div class="content-area-wrapper">
-
-        <aside id="additional-info-panel">
-            <div class="info-panel-header">
-                <h4>Información Adicional</h4>
-                <button id="close-info-panel" class="close-btn" style="background:none; border:none; font-size:1.8rem; cursor:pointer; line-height: 1;">&times;</button>
-            </div>
-            <div id="additional-info-content">
-                </div>
-        </aside>
-
-        <div id="protectedContent" style="display: none; flex-grow: 1; display: flex; flex-direction: column;">
-            <main class="chat-wrapper">
-                <div class="chat-header">
-                    <div class="chat-header-title"><span class="chat-icon"><img src="../styles/images/logobot.webp" alt="Documento" class="bot-image"></span> Document Assistant</div>
-                    <label class="switch-label"><input type="checkbox" id="use_internet"> <span class="switch"></span>Buscar en Internet</label>
-                </div>
-                <div id="chatBox" class="chat-messages">
-                    </div>
-                <div class="chat-input">
-                    <button class="cleanChat" onclick="clearChat()"><i class="fas fa-trash-alt"></i></button>
-                    <input type="text" id="question" placeholder="Ask a question about your documents..." />
-                    <button class="send" onclick='askBot()'>➤</button>
-                </div>
-            </main>
+      <div class="logo"><img src="../images/logo2.webp" alt="Documento" class="logo-image"><span
+          class="Knowledge"></span></div>
+      <nav>
+        <a class="home-btn" href="landing.html">Home</a>
+        <a class="chat-btn" href="chat.html">Chat</a>
+        <a class="docs-btn" href="documents.html">Documents</a>
+        <a href="#" id="openLogin">Sign In</a>
+        <p id="saludoUsuario" style="display:none;"></p>
+        <a href="#" id="logoutBtn" style="display:none" onclick="cerrarSesion()">Logout</a>
+        <a href="#" id="openRegister" class="btn-primary">Get started</a>
+        <div id="loginModal" class="modal" style="display: none;">
+          <div class="modal-content"><span class="close" id="closeLogin">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm"><input type="text" id="username" placeholder="Usuario" required><br><input
+                type="password" id="password" placeholder="Contraseña" required><br><button
+                type="submit">Entrar</button>
+              <p id="loginError" style="color: red; display: none;">Credenciales incorrectas</p>
+            </form>
+          </div>
         </div>
+        <div id="registroModal" class="modal" style="display: none;">
+          <div class="modal-content"><span class="close" id="closeRegister">&times;</span>
+            <h2>Crear Cuenta</h2>
+            <form id="registroForm"><input type="text" id="newUsername" placeholder="Nuevo usuario" required><br><input
+                type="password" id="newPassword" placeholder="Contraseña" required><br><button
+                type="submit">Registrarse</button>
+              <p id="registroError" style="color: red; display: none;">Nombre de usuario ya en uso</p>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="content-area-wrapper">
 
-    </div> <div id="loginRequired" style="display: none; text-align: center; margin-top: 80px;">
-        <h2 style="color: #d9534f; font-family: 'Inter', sans-serif;">Necesitas iniciar sesión para usar esta función.</h2>
-        <a href="landing.html" style="color: #007bff; text-decoration: underline;">Volver al inicio</a>
+      <aside id="additional-info-panel">
+        <div class="info-panel-header">
+          <h4>Información Adicional</h4>
+          <button id="close-info-panel" class="close-btn"
+            style="background:none; border:none; font-size:1.8rem; cursor:pointer; line-height: 1;">&times;</button>
+        </div>
+        <div id="additional-info-content">
+        </div>
+      </aside>
+
+      <div id="protectedContent" style="display: none; flex-grow: 1; display: flex; flex-direction: column;">
+        <main class="chat-wrapper">
+          <div class="chat-header">
+            <div class="chat-header-title"><span class="chat-icon"><img src="../images/logobot.webp" alt="Documento"
+                  class="bot-image"></span> Document Assistant</div>
+            <label class="switch-label"><input type="checkbox" id="use_internet"> <span class="switch"></span>Buscar en
+              Internet</label>
+          </div>
+          <div id="chatBox" class="chat-messages">
+          </div>
+          <div class="chat-input">
+            <button class="cleanChat" onclick="clearChat()"><i class="fas fa-trash-alt"></i></button>
+            <input type="text" id="question" placeholder="Ask a question about your documents..." />
+            <button class="send" onclick='askBot()'>➤</button>
+          </div>
+        </main>
+      </div>
+
+    </div>
+    <div id="loginRequired" style="display: none; text-align: center; margin-top: 80px;">
+      <h2 style="color: #d9534f; font-family: 'Inter', sans-serif;">Necesitas iniciar sesión para usar esta función.
+      </h2>
+      <a href="landing.html" style="color: #007bff; text-decoration: underline;">Volver al inicio</a>
     </div>
   </div>
 
@@ -177,8 +202,8 @@
     });
 
     closeInfoPanelButton.addEventListener('click', () => {
-        additionalInfoPanel.classList.remove('visible');
-        body.classList.remove('info-panel-open'); // Quita la clase para mover el chat de vuelta
+      additionalInfoPanel.classList.remove('visible');
+      body.classList.remove('info-panel-open'); // Quita la clase para mover el chat de vuelta
     });
 
     // ===============================================================
@@ -205,9 +230,9 @@
         chatBox.removeChild(typingIndicator);
 
         if (!res.ok) throw new Error(`Error del servidor: ${res.status}`);
-        
+
         const data = await res.json();
-        
+
         appendBotMessage(data.answer, data.additional_info);
 
       } catch (error) {
@@ -236,56 +261,56 @@
       messageElement.appendChild(timestamp);
 
       if (additionalInfo && additionalInfo.trim() !== "") {
-          const infoIcon = document.createElement('i');
-          infoIcon.className = 'fas fa-info-circle info-icon';
-          infoIcon.title = 'Ver información adicional';
-          
-          // ¡CAMBIO CLAVE AQUÍ! Alternar visibilidad
-          infoIcon.addEventListener('click', (e) => {
-              e.stopPropagation();
-              if (additionalInfoPanel.classList.contains('visible')) {
-                  // Si ya está visible, lo cerramos
-                  additionalInfoPanel.classList.remove('visible');
-                  body.classList.remove('info-panel-open');
-              } else {
-                  // Si no está visible, lo abrimos y mostramos el contenido
-                  additionalInfoContent.innerText = additionalInfo;
-                  additionalInfoPanel.classList.add('visible');
-                  body.classList.add('info-panel-open');
-              }
-          });
-          messageElement.appendChild(infoIcon);
+        const infoIcon = document.createElement('i');
+        infoIcon.className = 'fas fa-info-circle info-icon';
+        infoIcon.title = 'Ver información adicional';
+
+        // ¡CAMBIO CLAVE AQUÍ! Alternar visibilidad
+        infoIcon.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (additionalInfoPanel.classList.contains('visible')) {
+            // Si ya está visible, lo cerramos
+            additionalInfoPanel.classList.remove('visible');
+            body.classList.remove('info-panel-open');
+          } else {
+            // Si no está visible, lo abrimos y mostramos el contenido
+            additionalInfoContent.innerText = additionalInfo;
+            additionalInfoPanel.classList.add('visible');
+            body.classList.add('info-panel-open');
+          }
+        });
+        messageElement.appendChild(infoIcon);
       }
-      
+
       chatBox.appendChild(messageElement);
       chatBox.scrollTop = chatBox.scrollHeight;
-      
+
       saveChatHistory("Bot", text, timestamp.textContent);
     }
 
     // --- Funciones auxiliares y de historial (sin cambios importantes) ---
     function appendUserMessage(text) {
-        const msgDiv = document.createElement("div");
-        msgDiv.className = "message user";
-        const msgContent = document.createElement("p");
-        msgContent.textContent = text;
-        const timestamp = document.createElement("span");
-        timestamp.className = "timestamp";
-        timestamp.textContent = new Date().toLocaleTimeString();
-        msgDiv.appendChild(msgContent);
-        msgDiv.appendChild(timestamp);
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-        saveChatHistory("Tú", text, timestamp.textContent);
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message user";
+      const msgContent = document.createElement("p");
+      msgContent.textContent = text;
+      const timestamp = document.createElement("span");
+      timestamp.className = "timestamp";
+      timestamp.textContent = new Date().toLocaleTimeString();
+      msgDiv.appendChild(msgContent);
+      msgDiv.appendChild(timestamp);
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      saveChatHistory("Tú", text, timestamp.textContent);
     }
 
     function appendTypingIndicator() {
-        const typingIndicator = document.createElement("div");
-        typingIndicator.className = "message bot typing";
-        typingIndicator.innerHTML = "<p>...</p>";
-        chatBox.appendChild(typingIndicator);
-        chatBox.scrollTop = chatBox.scrollHeight;
-        return typingIndicator;
+      const typingIndicator = document.createElement("div");
+      typingIndicator.className = "message bot typing";
+      typingIndicator.innerHTML = "<p>...</p>";
+      chatBox.appendChild(typingIndicator);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return typingIndicator;
     }
 
     function parseMarkdownToHTML(text) { return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"); }
@@ -302,11 +327,11 @@
         appendBotMessage("Hola! Soy el asistente de documentos de tu empresa. Sube tu PDF y te ayudaré a encontrar lo que buscas.");
       } else {
         history.forEach(msg => {
-            if (msg.sender === 'Tú') {
-                appendUserMessage(msg.message);
-            } else {
-                appendBotMessage(msg.message);
-            }
+          if (msg.sender === 'Tú') {
+            appendUserMessage(msg.message);
+          } else {
+            appendBotMessage(msg.message);
+          }
         });
       }
     }
@@ -315,7 +340,7 @@
       localStorage.removeItem("chatHistory");
       appendBotMessage("Hola! Sube tu PDF y te ayudaré a encontrar lo que buscas.");
     }
-    
+/*
     // --- Lógica de Login/Registro y Modales (sin cambios) ---
     document.getElementById('loginForm').addEventListener('submit', async (e) => { e.preventDefault(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value.trim(); const errorElem = document.getElementById('loginError'); errorElem.style.display = 'none'; try { const res = await fetch('http://localhost:5000/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) }); if (!res.ok) { errorElem.textContent = 'Credenciales incorrectas'; errorElem.style.display = 'block'; return; } const data = await res.json(); if (data.success) { localStorage.setItem("usuario", username); actualizarInterfazSegunLogin(); document.getElementById('loginModal').style.display = 'none'; e.target.reset(); } } catch (err) { errorElem.textContent = 'Error de conexión'; errorElem.style.display = 'block'; } });
     document.getElementById('registroForm').addEventListener('submit', async (e) => { e.preventDefault(); const username = document.getElementById('newUsername').value.trim(); const password = document.getElementById('newPassword').value.trim(); const errorElem = document.getElementById('registroError'); errorElem.style.display = 'none'; try { const res = await fetch('http://localhost:5000/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) }); if (!res.ok) { errorElem.textContent = 'Nombre de usuario ya en uso'; errorElem.style.display = 'block'; return; } alert('Registro exitoso! Ahora puedes iniciar sesión.'); document.getElementById('registroModal').style.display = 'none'; e.target.reset(); } catch (err) { errorElem.textContent = 'Error de conexión'; errorElem.style.display = 'block'; } });
@@ -327,6 +352,8 @@
     document.getElementById('closeRegister').onclick = () => { document.getElementById('registroModal').style.display = 'none'; }
     window.onclick = (event) => { if (event.target == document.getElementById('loginModal')) { document.getElementById('loginModal').style.display = 'none'; } if (event.target == document.getElementById('registroModal')) { document.getElementById('registroModal').style.display = 'none'; } }
     window.onload = function () { actualizarInterfazSegunLogin(); loadChatHistory(); };
+*/
   </script>
 </body>
+
 </html>

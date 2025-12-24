@@ -1,4 +1,4 @@
-from passlib.context import CryptContext
+"""from passlib.context import CryptContext
 from app.database import fake_users_db
 
 
@@ -68,3 +68,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""
